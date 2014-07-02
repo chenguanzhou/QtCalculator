@@ -35,6 +35,7 @@ public slots:
     void onOppositeClicked();
     void onReciprocalClicked();
     void onSqrtClicked();
+    void onBackSpace();
 
     void onAddClicked();
     void onMinusClicked();
@@ -43,11 +44,16 @@ public slots:
 
     void onEqualClicked();
 
+    void onCClicked();
+    void onCEClicked();
+
 private:
     void updateShowingValue();
     void ignoreZeros();
     bool arithmeticCompute(ArithmeticOperators oper, double val1, double val2, double &res);
     bool executeLastArithmeticCompute();
+
+    void resizeEvent(QResizeEvent *e);
 
 private:
     Ui::MainWindow *ui;

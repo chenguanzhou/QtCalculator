@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_Sym_Opposite,SIGNAL(clicked()),SLOT(onOppositeClicked()));
     connect(ui->pushButton_Sym_Reciprocal,SIGNAL(clicked()),SLOT(onReciprocalClicked()));
     connect(ui->pushButton_Sym_Sqrt,SIGNAL(clicked()),SLOT(onSqrtClicked()));
+    connect(ui->pushButton_Sym_Back,SIGNAL(clicked()),SLOT(onBackSpace()));
 
     connect(ui->pushButton_Sym_Add,SIGNAL(clicked()),SLOT(onAddClicked()));
     connect(ui->pushButton_Sym_Minus,SIGNAL(clicked()),SLOT(onMinusClicked()));
@@ -40,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_Sym_Divide,SIGNAL(clicked()),SLOT(onDivideClicked()));
 
     connect(ui->pushButton_Sym_Equal,SIGNAL(clicked()),SLOT(onEqualClicked()));
+
+    connect(ui->pushButton_Sym_C,SIGNAL(clicked()),SLOT(onCClicked()));
+    connect(ui->pushButton_Sym_CE,SIGNAL(clicked()),SLOT(onCEClicked()));
 }
 
 MainWindow::~MainWindow()
@@ -104,12 +108,28 @@ void MainWindow::onSqrtClicked()
     {
         QToolTip::showText(this->mapToGlobal(ui->pushButton_Sym_Sqrt->rect().bottomLeft()),
                            tr("<font color=\"#FF0000\">Current number is less than 0, couldn't compute the square root!</font>"),this);
-//        QMessageBox::warning(this,tr("Warning"),tr("Current number is less than 0, couldn't compute the square root!"));
+        //        QMessageBox::warning(this,tr("Warning"),tr("Current number is less than 0, couldn't compute the square root!"));
 
         return;
     }
     double res = sqrt(src);
     currentValue = QString::number(res,'g',ui->lcdNumber->digitCount()-2);
+    updateShowingValue();
+}
+
+void MainWindow::onBackSpace()
+{
+    if (currentValue == "0")
+        return;
+
+    if (currentValue.size()==1)
+    {
+        currentValue = "0";
+        editState = NEW_NUMBER;
+    }
+    else
+        currentValue.remove(currentValue.size()-1,1);
+
     updateShowingValue();
 }
 
@@ -146,6 +166,21 @@ void MainWindow::onEqualClicked()
     executeLastArithmeticCompute();
     currentValue = lastValue;
     lastValue.clear();
+    updateShowingValue();
+}
+
+void MainWindow::onCClicked()
+{
+    currentValue = "0";
+    editState = NEW_NUMBER;
+    updateShowingValue();
+}
+
+void MainWindow::onCEClicked()
+{
+    currentValue = "0";
+    lastValue = "";
+    editState = NEW_NUMBER;
     updateShowingValue();
 }
 
@@ -204,5 +239,24 @@ bool MainWindow::executeLastArithmeticCompute()
     editState = NEW_NUMBER;
 
     return true;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e)
+{
+    QFont font;
+
+//    int widthScale  = static_cast<int>(this->width() * 100/210.);
+//    int heightScale = static_cast<int>(this->height()* 100/270.);
+
+//    foreach (QPushButton* pushButton, this->findChildren<QPushButton*>()) {
+//        font = pushButton->font();
+//        font.setStretch(qMin(widthScale,heightScale));
+//        pushButton->setFont(font);
+//    }
+
+
+//    font = ui->label->font();
+//    font.setStretch(ui->label->height()*100/15.);
+//    ui->label->setFont(font);
 }
 
