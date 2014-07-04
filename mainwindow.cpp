@@ -172,14 +172,14 @@ void MainWindow::onEqualClicked()
 void MainWindow::onCClicked()
 {
     currentValue = "0";
+    lastValue = "";
     editState = NEW_NUMBER;
     updateShowingValue();
 }
 
 void MainWindow::onCEClicked()
 {
-    currentValue = "0";
-    lastValue = "";
+    currentValue = "0";    
     editState = NEW_NUMBER;
     updateShowingValue();
 }
