@@ -86,7 +86,7 @@ void MainWindow::onOppositeClicked()
     {
         currentValue.remove(0,1);
     }
-    else if (currentValue.at(0) != '0')
+    else if (currentValue != "0" && currentValue != "0.")
     {
         currentValue.push_front('-');
     }
@@ -97,8 +97,9 @@ void MainWindow::onReciprocalClicked()
 {
     double res = 0;
     arithmeticCompute(DIVIDE, 1, currentValue.toDouble(), res);
-    currentValue = QString::number(res,'g',ui->lcdNumber->digitCount()-2);
+    currentValue = QString::number(res,'g',ui->lcdNumber->digitCount());
     updateShowingValue();
+    editState = NEW_NUMBER;
 }
 
 void MainWindow::onSqrtClicked()
@@ -113,7 +114,7 @@ void MainWindow::onSqrtClicked()
         return;
     }
     double res = sqrt(src);
-    currentValue = QString::number(res,'g',ui->lcdNumber->digitCount()-2);
+    currentValue = QString::number(res,'g',ui->lcdNumber->digitCount());
     updateShowingValue();
 }
 
@@ -190,7 +191,14 @@ void MainWindow::updateShowingValue()
     QMetaEnum metaEnum = this->metaObject()->enumerator(indexOfEnum);
 
     qDebug()<<"State:"<<metaEnum.valueToKey(editState)<<"\tCurrent Value:"<<currentValue;
-    ui->lcdNumber->display(currentValue);
+
+    //0.001232873468127354768253542317
+    QString show = currentValue;
+    if (currentValue.contains(".") && currentValue.size()>=ui->lcdNumber->digitCount())
+        show = currentValue.mid(0,ui->lcdNumber->digitCount());
+    ui->lcdNumber->display(show);
+
+
     if (!lastValue.isEmpty())
         ui->label->setText(lastValue + " " + operatorMap.value(currentOperator));
     else
@@ -231,7 +239,7 @@ bool MainWindow::executeLastArithmeticCompute()
     {
         double res = 0;
         bool isValid = arithmeticCompute(currentOperator,lastValue.toDouble(),currentValue.toDouble(),res);
-        lastValue = QString::number(res,'g',ui->lcdNumber->digitCount()-2);
+        lastValue = QString::number(res,'g',ui->lcdNumber->digitCount());
     }
     else
         lastValue = currentValue;
